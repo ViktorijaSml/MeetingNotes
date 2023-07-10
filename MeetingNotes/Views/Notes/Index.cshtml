@@ -15,9 +15,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.NoteData)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Topic)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -27,9 +25,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.NoteData)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Topic)
-            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.NoteId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.NoteId">Details</a> |
