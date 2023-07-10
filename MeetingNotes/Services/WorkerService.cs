@@ -17,6 +17,7 @@ namespace MeetingNotes.Services
         {
             _db = db;
         }
+
         public Worker? GetWorkerById(int id)
         {
             //firstOrDefault vraca null ako nema vrijednosti - inace bi bio error

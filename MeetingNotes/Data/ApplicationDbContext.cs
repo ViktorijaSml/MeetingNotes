@@ -17,5 +17,11 @@ namespace MeetingNotes.Data
             builder.Entity<Worker>().ToTable("Worker");
             base.OnModelCreating(builder);
         }
+
+        public DbSet<MeetingNotes.Models.Manager> Manager { get; set; } = default!;
+
+        public DbSet<MeetingNotes.Models.Meeting> Meeting { get; set; } = default!;
+
+        public DbSet<MeetingNotes.Models.Note> Note { get; set; } = default!;
     }
 }

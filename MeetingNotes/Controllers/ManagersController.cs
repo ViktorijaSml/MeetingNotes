@@ -10,87 +10,87 @@ using MeetingNotes.Models;
 
 namespace MeetingNotes.Controllers
 {
-    public class WorkersController : Controller
+    public class ManagersController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public WorkersController(ApplicationDbContext context)
+        public ManagersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Workers
+        // GET: Managers
         public async Task<IActionResult> Index()
         {
-              return _context.Workers != null ? 
-                          View(await _context.Workers.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Workers'  is null.");
+              return _context.Manager != null ? 
+                          View(await _context.Manager.ToListAsync()) :
+                          Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
         }
 
-        // GET: Workers/Details/5
+        // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Workers == null)
+            if (id == null || _context.Manager == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (worker == null)
+            var manager = await _context.Manager
+                .FirstOrDefaultAsync(m => m.ManagerId == id);
+            if (manager == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(manager);
         }
 
-        // GET: Workers/Create
+        // GET: Managers/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Workers/Create
+        // POST: Managers/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,LastName,HiringDate,UserId")] Worker worker)
+        public async Task<IActionResult> Create([Bind("ManagerId,FirstName,LastName")] Manager manager)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(worker);
+                _context.Add(manager);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(worker);
+            return View(manager);
         }
 
-        // GET: Workers/Edit/5
+        // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Workers == null)
+            if (id == null || _context.Manager == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers.FindAsync(id);
-            if (worker == null)
+            var manager = await _context.Manager.FindAsync(id);
+            if (manager == null)
             {
                 return NotFound();
             }
-            return View(worker);
+            return View(manager);
         }
 
-        // POST: Workers/Edit/5
+        // POST: Managers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,LastName,HiringDate,UserId")] Worker worker)
+        public async Task<IActionResult> Edit(int id, [Bind("ManagerId,FirstName,LastName")] Manager manager)
         {
-            if (id != worker.Id)
+            if (id != manager.ManagerId)
             {
                 return NotFound();
             }
@@ -99,12 +99,12 @@ namespace MeetingNotes.Controllers
             {
                 try
                 {
-                    _context.Update(worker);
+                    _context.Update(manager);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.Id))
+                    if (!ManagerExists(manager.ManagerId))
                     {
                         return NotFound();
                     }
@@ -115,49 +115,49 @@ namespace MeetingNotes.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(worker);
+            return View(manager);
         }
 
-        // GET: Workers/Delete/5
+        // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Workers == null)
+            if (id == null || _context.Manager == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (worker == null)
+            var manager = await _context.Manager
+                .FirstOrDefaultAsync(m => m.ManagerId == id);
+            if (manager == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(manager);
         }
 
-        // POST: Workers/Delete/5
+        // POST: Managers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Workers == null)
+            if (_context.Manager == null)
             {
-                return Problem("Entity set 'ApplicationDbContext.Workers'  is null.");
+                return Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
             }
-            var worker = await _context.Workers.FindAsync(id);
-            if (worker != null)
+            var manager = await _context.Manager.FindAsync(id);
+            if (manager != null)
             {
-                _context.Workers.Remove(worker);
+                _context.Manager.Remove(manager);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WorkerExists(int id)
+        private bool ManagerExists(int id)
         {
-          return (_context.Workers?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.Manager?.Any(e => e.ManagerId == id)).GetValueOrDefault();
         }
     }
 }
