@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeetingNotes.Data
 {
@@ -6,9 +7,22 @@ namespace MeetingNotes.Data
     {
         public static void Initialize(ApplicationDbContext context)
         {
-            
+
             context.Database.Migrate();
+
+
+            if (context.Managers.Any()) { 
+                return;   // DB has been seeded
+            } 
+            if (context.Meetings.Any())
+            {
+                return;   // DB has been seeded
+            }
             if (context.Workers.Any())
+            {
+                return;   // DB has been seeded
+            }
+            if (context.Notes.Any())
             {
                 return;   // DB has been seeded
             }

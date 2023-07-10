@@ -22,20 +22,20 @@ namespace MeetingNotes.Controllers
         // GET: Meetings
         public async Task<IActionResult> Index()
         {
-              return _context.Meeting != null ? 
-                          View(await _context.Meeting.ToListAsync()) :
+              return _context.Meetings != null ? 
+                          View(await _context.Meetings.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Meeting'  is null.");
         }
 
         // GET: Meetings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Meeting == null)
+            if (id == null || _context.Meetings == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meeting
+            var meeting = await _context.Meetings
                 .FirstOrDefaultAsync(m => m.MeetingId == id);
             if (meeting == null)
             {
@@ -70,12 +70,12 @@ namespace MeetingNotes.Controllers
         // GET: Meetings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Meeting == null)
+            if (id == null || _context.Meetings == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meeting.FindAsync(id);
+            var meeting = await _context.Meetings.FindAsync(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -121,12 +121,12 @@ namespace MeetingNotes.Controllers
         // GET: Meetings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Meeting == null)
+            if (id == null || _context.Meetings == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meeting
+            var meeting = await _context.Meetings
                 .FirstOrDefaultAsync(m => m.MeetingId == id);
             if (meeting == null)
             {
@@ -141,14 +141,14 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Meeting == null)
+            if (_context.Meetings == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Meeting'  is null.");
             }
-            var meeting = await _context.Meeting.FindAsync(id);
+            var meeting = await _context.Meetings.FindAsync(id);
             if (meeting != null)
             {
-                _context.Meeting.Remove(meeting);
+                _context.Meetings.Remove(meeting);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace MeetingNotes.Controllers
 
         private bool MeetingExists(int id)
         {
-          return (_context.Meeting?.Any(e => e.MeetingId == id)).GetValueOrDefault();
+          return (_context.Meetings?.Any(e => e.MeetingId == id)).GetValueOrDefault();
         }
     }
 }

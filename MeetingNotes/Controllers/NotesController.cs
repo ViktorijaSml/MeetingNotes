@@ -22,20 +22,20 @@ namespace MeetingNotes.Controllers
         // GET: Notes
         public async Task<IActionResult> Index()
         {
-              return _context.Note != null ? 
-                          View(await _context.Note.ToListAsync()) :
+              return _context.Notes != null ? 
+                          View(await _context.Notes.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Note'  is null.");
         }
 
         // GET: Notes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Note == null)
+            if (id == null || _context.Notes == null)
             {
                 return NotFound();
             }
 
-            var note = await _context.Note
+            var note = await _context.Notes
                 .FirstOrDefaultAsync(m => m.NoteId == id);
             if (note == null)
             {
@@ -70,12 +70,12 @@ namespace MeetingNotes.Controllers
         // GET: Notes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Note == null)
+            if (id == null || _context.Notes == null)
             {
                 return NotFound();
             }
 
-            var note = await _context.Note.FindAsync(id);
+            var note = await _context.Notes.FindAsync(id);
             if (note == null)
             {
                 return NotFound();
@@ -121,12 +121,12 @@ namespace MeetingNotes.Controllers
         // GET: Notes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Note == null)
+            if (id == null || _context.Notes == null)
             {
                 return NotFound();
             }
 
-            var note = await _context.Note
+            var note = await _context.Notes
                 .FirstOrDefaultAsync(m => m.NoteId == id);
             if (note == null)
             {
@@ -141,14 +141,14 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Note == null)
+            if (_context.Notes == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Note'  is null.");
             }
-            var note = await _context.Note.FindAsync(id);
+            var note = await _context.Notes.FindAsync(id);
             if (note != null)
             {
-                _context.Note.Remove(note);
+                _context.Notes.Remove(note);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace MeetingNotes.Controllers
 
         private bool NoteExists(int id)
         {
-          return (_context.Note?.Any(e => e.NoteId == id)).GetValueOrDefault();
+          return (_context.Notes?.Any(e => e.NoteId == id)).GetValueOrDefault();
         }
     }
 }

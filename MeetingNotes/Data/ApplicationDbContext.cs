@@ -11,17 +11,19 @@ namespace MeetingNotes.Data
         {
         }
         public DbSet<Worker> Workers { get; set; }
+        public DbSet<Manager> Managers{ get; set; }
+        public DbSet<Meeting> Meetings{ get; set; } 
+        public DbSet<Note> Notes{ get; set; } 
+    
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Worker>().ToTable("Worker");
+            builder.Entity<Manager>().ToTable("Manager");
+            builder.Entity<Meeting>().ToTable("Meeting");
+            builder.Entity<Note>().ToTable("Note");
+
             base.OnModelCreating(builder);
         }
-
-        public DbSet<MeetingNotes.Models.Manager> Manager { get; set; } = default!;
-
-        public DbSet<MeetingNotes.Models.Meeting> Meeting { get; set; } = default!;
-
-        public DbSet<MeetingNotes.Models.Note> Note { get; set; } = default!;
-    }
+}
 }

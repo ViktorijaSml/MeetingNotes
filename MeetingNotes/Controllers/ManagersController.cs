@@ -22,20 +22,20 @@ namespace MeetingNotes.Controllers
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-              return _context.Manager != null ? 
-                          View(await _context.Manager.ToListAsync()) :
+              return _context.Managers != null ? 
+                          View(await _context.Managers.ToListAsync()) :
                           Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
         }
 
         // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Manager == null)
+            if (id == null || _context.Managers == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Manager
+            var manager = await _context.Managers
                 .FirstOrDefaultAsync(m => m.ManagerId == id);
             if (manager == null)
             {
@@ -70,12 +70,12 @@ namespace MeetingNotes.Controllers
         // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Manager == null)
+            if (id == null || _context.Managers == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Manager.FindAsync(id);
+            var manager = await _context.Managers.FindAsync(id);
             if (manager == null)
             {
                 return NotFound();
@@ -121,12 +121,12 @@ namespace MeetingNotes.Controllers
         // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Manager == null)
+            if (id == null || _context.Managers == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Manager
+            var manager = await _context.Managers
                 .FirstOrDefaultAsync(m => m.ManagerId == id);
             if (manager == null)
             {
@@ -141,14 +141,14 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Manager == null)
+            if (_context.Managers == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
             }
-            var manager = await _context.Manager.FindAsync(id);
+            var manager = await _context.Managers.FindAsync(id);
             if (manager != null)
             {
-                _context.Manager.Remove(manager);
+                _context.Managers.Remove(manager);
             }
             
             await _context.SaveChangesAsync();
@@ -157,7 +157,7 @@ namespace MeetingNotes.Controllers
 
         private bool ManagerExists(int id)
         {
-          return (_context.Manager?.Any(e => e.ManagerId == id)).GetValueOrDefault();
+          return (_context.Managers?.Any(e => e.ManagerId == id)).GetValueOrDefault();
         }
     }
 }
