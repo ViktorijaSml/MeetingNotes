@@ -24,6 +24,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.UserId)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsManager)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -42,6 +45,9 @@
             <td>
                 @Html.DisplayFor(modelItem => item.UserId)
             </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.IsManager)
+                </th>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
