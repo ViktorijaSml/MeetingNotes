@@ -8,15 +8,19 @@ using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
+using Microsoft.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace MeetingNotes.Controllers
 {
     public class WorkersController : Controller
     {
         private readonly IWorkerService _workerService;
+
         public WorkersController(IWorkerService workerService)
         {
             _workerService = workerService;
+
         }
 
         //---------------------------------------------------------------------------------------------------------
@@ -58,9 +62,11 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,LastName,HiringDate,UserId")] Worker worker)
+        public async Task<IActionResult> Create([Bind("Name,LastName,HiringDate,UserId,IsManager")] Worker worker)
         {
-            try { 
+            
+            try
+            { 
             if (ModelState.IsValid)
             {
                 _workerService.CreateWorker(worker);

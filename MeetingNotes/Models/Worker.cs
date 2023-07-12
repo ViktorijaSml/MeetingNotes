@@ -10,7 +10,7 @@ namespace MeetingNotes.Models
         public DateTime HiringDate { get; set; }
         public bool IsManager { get; set; } = false;
         public Guid UserId { get; set; } //FK usera
-        public IdentityUser IdentityUser { get; set; }
+        public IdentityUser? IdentityUser { get; set; }
 
     }
 }

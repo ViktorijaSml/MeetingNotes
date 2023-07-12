@@ -29,10 +29,9 @@ namespace MeetingNotes.Services
 
         public async Task<IEnumerable<Worker>> GetAllWorkers() => await _db.Workers.ToListAsync();
 
-        public Worker? GetWorkerById(int? id) =>
-             //firstOrDefault vraca null ako nema vrijednosti - inace bi bio error
-             _db.Workers.Where(w => w.Id == id).FirstOrDefault();
+        public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).FirstOrDefault();
 
+          
         public int CreateWorker(Worker worker)
         {
             _db.Workers.Add(worker);//ide u kvazi cache
