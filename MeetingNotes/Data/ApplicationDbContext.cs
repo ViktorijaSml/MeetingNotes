@@ -13,8 +13,9 @@ namespace MeetingNotes.Data
         public DbSet<Worker> Workers { get; set; }
         public DbSet<Manager> Managers{ get; set; }
         public DbSet<Meeting> Meetings{ get; set; } 
-        public DbSet<Note> Notes{ get; set; } 
-    
+        public DbSet<Note> Notes{ get; set; }
+
+        //---------------------------------------------------------------------------------------------------------
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

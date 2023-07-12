@@ -1,15 +1,23 @@
 ﻿using MeetingNotes.Data;
 using MeetingNotes.Models;
+using MeetingNotes.Controllers;
+using Microsoft.EntityFrameworkCore;
 
 namespace MeetingNotes.Services
 {
     public interface IWorkerService
-    {
-        Worker? GetWorkerById(int id);
-        int CreateWorker(Worker worker);
-        public IEnumerable<Worker> GetAllWorkers();
-
+    {   
+        public Task<IEnumerable<Worker>> GetAllWorkers();
+        public Worker? GetWorkerById(int? id);
+        public int CreateWorker(Worker worker);
+        public Worker UpdateWorker(Worker worker);
+        public void DeleteWorker(Worker worker);
+        public bool CheckWorker(int id);
+        public void setManager(int workerId);
     }
+
+    //---------------------------------------------------------------------------------------------------------
+
     public class WorkerService : IWorkerService
     {
         private readonly ApplicationDbContext _db;
@@ -18,12 +26,13 @@ namespace MeetingNotes.Services
             _db = db;
         }
 
-        public Worker? GetWorkerById(int id)
-        {
-            //firstOrDefault vraca null ako nema vrijednosti - inace bi bio error
-            var Worker = _db.Workers.Where(w => w.Id == id).FirstOrDefault();
-            return Worker;
-        }
+
+        public async Task<IEnumerable<Worker>> GetAllWorkers() => await _db.Workers.ToListAsync();
+
+        public Worker? GetWorkerById(int? id) =>
+             //firstOrDefault vraca null ako nema vrijednosti - inace bi bio error
+             _db.Workers.Where(w => w.Id == id).FirstOrDefault();
+
         public int CreateWorker(Worker worker)
         {
             _db.Workers.Add(worker);//ide u kvazi cache
@@ -31,10 +40,30 @@ namespace MeetingNotes.Services
             return worker.Id;
         }
 
-        public IEnumerable<Worker> GetAllWorkers()
+        public Worker UpdateWorker (Worker worker)
         {
-            return _db.Workers.ToList();
+            _db.Update(worker);
+            _db.SaveChanges();
+            return worker;
         }
+
+        public void DeleteWorker(Worker worker)
+        {
+            _db.Workers.Remove(worker);
+            _db.SaveChanges();
+        }
+
+        public void setManager(int workerId) {
+            var worker = GetWorkerById(workerId);
+            
+            if (worker != null)
+            {
+                worker.IsManager = true;
+                _db.SaveChanges();
+            }
+        }
+
+        public bool CheckWorker(int id) => (_db.Workers?.Any(e => e.Id == id)).GetValueOrDefault();
 
     }
 }

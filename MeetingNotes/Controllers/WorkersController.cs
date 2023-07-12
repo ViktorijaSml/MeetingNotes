@@ -7,42 +7,44 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
+using MeetingNotes.Services;
 
 namespace MeetingNotes.Controllers
 {
     public class WorkersController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public WorkersController(ApplicationDbContext context)
+        private readonly IWorkerService _workerService;
+        public WorkersController(IWorkerService workerService)
         {
-            _context = context;
+            _workerService = workerService;
         }
+
+        //---------------------------------------------------------------------------------------------------------
 
         // GET: Workers
         public async Task<IActionResult> Index()
         {
-              return _context.Workers != null ? 
-                          View(await _context.Workers.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Workers'  is null.");
+            var  workers = await _workerService.GetAllWorkers();
+            return (workers !=  null) ? View(workers) : Problem("Entity set 'ApplicationDbContext.Workers'  is null.");  
         }
 
         // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Workers == null)
+            var workers = await _workerService.GetAllWorkers();
+
+            if (id == null || workers == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (worker == null)
+            var workerById = _workerService.GetWorkerById(id);
+            if (workerById == null)
             {
                 return NotFound();
             }
 
-            return View(worker);
+            return View(workerById);
         }
 
         // GET: Workers/Create
@@ -58,11 +60,19 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name,LastName,HiringDate,UserId")] Worker worker)
         {
+            try { 
             if (ModelState.IsValid)
             {
-                _context.Add(worker);
-                await _context.SaveChangesAsync();
+                _workerService.CreateWorker(worker);
                 return RedirectToAction(nameof(Index));
+            }
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.
+                ModelState.AddModelError("", "Unable to save changes. " +
+                    "Try again, and if the problem persists " +
+                    "see your system administrator.");
             }
             return View(worker);
         }
@@ -70,18 +80,20 @@ namespace MeetingNotes.Controllers
         // GET: Workers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Workers == null)
+            if (id == null || _workerService.GetAllWorkers() == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers.FindAsync(id);
+            var worker = _workerService.GetWorkerById(id);
             if (worker == null)
             {
                 return NotFound();
             }
             return View(worker);
         }
+
+        //---------------------------------------------------------------------------------------------------------
 
         // POST: Workers/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -99,8 +111,7 @@ namespace MeetingNotes.Controllers
             {
                 try
                 {
-                    _context.Update(worker);
-                    await _context.SaveChangesAsync();
+                    _workerService.UpdateWorker(worker);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,13 +132,12 @@ namespace MeetingNotes.Controllers
         // GET: Workers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Workers == null)
+            if (id == null || _workerService.GetAllWorkers == null)
             {
                 return NotFound();
             }
 
-            var worker = await _context.Workers
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var worker = _workerService.GetWorkerById(id);
             if (worker == null)
             {
                 return NotFound();
@@ -141,23 +151,19 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Workers == null)
+            if (_workerService.GetAllWorkers == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Workers'  is null.");
             }
-            var worker = await _context.Workers.FindAsync(id);
+            var worker = _workerService.GetWorkerById(id);
             if (worker != null)
             {
-                _context.Workers.Remove(worker);
+                _workerService.DeleteWorker(worker);   
             }
-            
-            await _context.SaveChangesAsync();
+          
             return RedirectToAction(nameof(Index));
         }
 
-        private bool WorkerExists(int id)
-        {
-          return (_context.Workers?.Any(e => e.Id == id)).GetValueOrDefault();
-        }
+        private bool WorkerExists(int id) => _workerService.CheckWorker(id);
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using MeetingNotes.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeetingNotes.Data
@@ -10,19 +11,7 @@ namespace MeetingNotes.Data
 
             context.Database.Migrate();
 
-
-            if (context.Managers.Any()) { 
-                return;   // DB has been seeded
-            } 
-            if (context.Meetings.Any())
-            {
-                return;   // DB has been seeded
-            }
             if (context.Workers.Any())
-            {
-                return;   // DB has been seeded
-            }
-            if (context.Notes.Any())
             {
                 return;   // DB has been seeded
             }
