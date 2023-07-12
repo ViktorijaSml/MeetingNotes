@@ -7,7 +7,7 @@ namespace MeetingNotes.Services
 {
     public interface IWorkerService
     {   
-        public Task<IEnumerable<Worker>> GetAllWorkers();
+        public IEnumerable<Worker> GetAllWorkers();
         public Worker? GetWorkerById(int? id);
         public int CreateWorker(Worker worker);
         public Worker UpdateWorker(Worker worker);
@@ -27,7 +27,7 @@ namespace MeetingNotes.Services
         }
 
 
-        public async Task<IEnumerable<Worker>> GetAllWorkers() => await _db.Workers.ToListAsync();
+        public  IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
 
         public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).FirstOrDefault();
 

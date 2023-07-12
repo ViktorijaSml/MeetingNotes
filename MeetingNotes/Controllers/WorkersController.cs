@@ -28,14 +28,14 @@ namespace MeetingNotes.Controllers
         // GET: Workers
         public async Task<IActionResult> Index()
         {
-            var  workers = await _workerService.GetAllWorkers();
+            var  workers =  _workerService.GetAllWorkers();
             return (workers !=  null) ? View(workers) : Problem("Entity set 'ApplicationDbContext.Workers'  is null.");  
         }
 
         // GET: Workers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            var workers = await _workerService.GetAllWorkers();
+            var workers =  _workerService.GetAllWorkers();
 
             if (id == null || workers == null)
             {
