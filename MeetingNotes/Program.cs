@@ -22,7 +22,10 @@ namespace MeetingNotes
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddTransient<IWorkerService, WorkerService>(); 
+            builder.Services.AddTransient<IWorkerService, WorkerService>();
+            builder.Services.AddTransient<IMeetingService, MeetingService>();
+            builder.Services.AddTransient<INoteService, NoteService>();
+
 
             var app = builder.Build();
 

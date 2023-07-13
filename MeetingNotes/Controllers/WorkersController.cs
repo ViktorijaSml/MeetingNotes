@@ -8,8 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
-using Microsoft.Identity;
-using Microsoft.AspNetCore.Identity;
+
 
 namespace MeetingNotes.Controllers
 {
@@ -121,7 +120,7 @@ namespace MeetingNotes.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!WorkerExists(worker.Id))
+                    if (!_workerService.CheckWorker(id))
                     {
                         return NotFound();
                     }
@@ -169,7 +168,5 @@ namespace MeetingNotes.Controllers
           
             return RedirectToAction(nameof(Index));
         }
-
-        private bool WorkerExists(int id) => _workerService.CheckWorker(id);
     }
 }

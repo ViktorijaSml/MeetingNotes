@@ -7,36 +7,39 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
+using MeetingNotes.Services;
+
 
 namespace MeetingNotes.Controllers
 {
     public class MeetingsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public MeetingsController(ApplicationDbContext context)
+        private readonly IMeetingService _meetingService;
+        private readonly INoteService _noteService;
+        public MeetingsController(IMeetingService meetingService, INoteService noteService)
         {
-            _context = context;
+            _meetingService = meetingService;
+            _noteService = noteService; 
         }
+
+        //---------------------------------------------------------------------------------------------------------
 
         // GET: Meetings
         public async Task<IActionResult> Index()
         {
-              return _context.Meetings != null ? 
-                          View(await _context.Meetings.ToListAsync()) :
-                          Problem("Entity set 'ApplicationDbContext.Meeting'  is null.");
+            var meetings = _meetingService.GetAllMeetings();
+            return (meetings != null) ? View(meetings) : Problem("Entity set 'ApplicationDbContext.Meetings  is null.");
         }
 
         // GET: Meetings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Meetings == null)
+            if (id == null || _meetingService.GetAllMeetings() == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = _meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -56,12 +59,12 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MeetingId,ManagerId,WorkerId,NotesId,DateTime")] Meeting meeting)
+        public async Task<IActionResult> Create([Bind("ManagerId,WorkerId,NotesId,DateTime")] Meeting meeting, [Bind("NotesData")] Note note)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(meeting);
-                await _context.SaveChangesAsync();
+                _meetingService.CreateMeeting(meeting);
+                _noteService.CreateNote(note);
                 return RedirectToAction(nameof(Index));
             }
             return View(meeting);
@@ -70,12 +73,12 @@ namespace MeetingNotes.Controllers
         // GET: Meetings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Meetings == null)
+            if (id == null || _meetingService.GetAllMeetings() == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings.FindAsync(id);
+            var meeting =_meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -99,12 +102,11 @@ namespace MeetingNotes.Controllers
             {
                 try
                 {
-                    _context.Update(meeting);
-                    await _context.SaveChangesAsync();
+                    _meetingService.UpdateMeeting(meeting);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!MeetingExists(meeting.MeetingId))
+                    if (!_meetingService.CheckMeeting(id))
                     {
                         return NotFound();
                     }
@@ -121,13 +123,12 @@ namespace MeetingNotes.Controllers
         // GET: Meetings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Meetings == null)
+            if (id == null || _meetingService.GetAllMeetings() == null)
             {
                 return NotFound();
             }
 
-            var meeting = await _context.Meetings
-                .FirstOrDefaultAsync(m => m.MeetingId == id);
+            var meeting = _meetingService.GetMeetingById(id);
             if (meeting == null)
             {
                 return NotFound();
@@ -141,23 +142,17 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Meetings == null)
+            if (_meetingService.GetAllMeetings() == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Meeting'  is null.");
             }
-            var meeting = await _context.Meetings.FindAsync(id);
+            var meeting = _meetingService.GetMeetingById(id);
             if (meeting != null)
             {
-                _context.Meetings.Remove(meeting);
+                _meetingService.DeleteMeeting(meeting);
             }
-            
-            await _context.SaveChangesAsync();
+    
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool MeetingExists(int id)
-        {
-          return (_context.Meetings?.Any(e => e.MeetingId == id)).GetValueOrDefault();
         }
     }
 }
