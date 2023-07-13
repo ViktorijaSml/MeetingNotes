@@ -8,5 +8,7 @@
         public int NotesId { get; set; }
         public DateTime DateTime { get; set; }
 
+        public Note Note { get; set; }
+
     }
 }

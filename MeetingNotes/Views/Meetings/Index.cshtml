@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<MeetingNotes.Models.Meeting>
 
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -18,11 +19,15 @@
             <th>
                 @Html.DisplayNameFor(model => model.WorkerId)
             </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.DateTime)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.NotesId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.DateTime)
+                @Html.DisplayNameFor(model => model.Note.NoteData)
             </th>
             <th></th>
         </tr>
@@ -36,11 +41,15 @@
             <td>
                 @Html.DisplayFor(modelItem => item.WorkerId)
             </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTime)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.NotesId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
+                @Html.DisplayFor(modelItem => item.Note.NoteData)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MeetingId">Edit</a> |

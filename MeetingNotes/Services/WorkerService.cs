@@ -26,8 +26,9 @@ namespace MeetingNotes.Services
             _db = db;
         }
 
+    //---------------------------------------------------------------------------------------------------------
 
-        public  IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
+        public IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
 
         public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).FirstOrDefault();
 
