@@ -102,6 +102,8 @@ namespace MeetingNotes.Controllers
                 try
                 {
                     _meetingService.UpdateMeeting(meeting);
+                    var meetings = _meetingService.GetMeetingById(meeting.MeetingId);
+                    _noteService.UpdateNote(meetings.Note);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
