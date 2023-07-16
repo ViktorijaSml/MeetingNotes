@@ -1,4 +1,4 @@
-﻿@model Tuple<Meeting,Note>
+﻿@model MeetingNotes.Models.Meeting
 
 
 @{
@@ -29,15 +29,11 @@
                 <span asp-validation-for="DateTime" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NotesId" class="control-label"></label>
-                <input asp-for="NotesId" class="form-control" />
-                <span asp-validation-for="NotesId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Note.NoteData" class="control-label"></label>
                 <input asp-for="Note.NoteData" class="form-control" />
                 <span asp-validation-for="Note.NoteData" class="text-danger"></span>
             </div>
+            
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>

@@ -59,12 +59,11 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ManagerId,WorkerId,NotesId,DateTime")] Meeting meeting, [Bind("NotesData")] Note note)
+        public async Task<IActionResult> Create(Meeting meeting)
         {
             if (ModelState.IsValid)
             {
                 _meetingService.CreateMeeting(meeting);
-                _noteService.CreateNote(note);
                 return RedirectToAction(nameof(Index));
             }
             return View(meeting);
@@ -91,9 +90,9 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MeetingId,ManagerId,WorkerId,NotesId,DateTime")] Meeting meeting)
+        public async Task<IActionResult> Edit(Meeting meeting)
         {
-            if (id != meeting.MeetingId)
+            if (meeting.MeetingId == null)
             {
                 return NotFound();
             }
@@ -106,7 +105,7 @@ namespace MeetingNotes.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_meetingService.CheckMeeting(id))
+                    if (!_meetingService.CheckMeeting(meeting.MeetingId))
                     {
                         return NotFound();
                     }
@@ -151,7 +150,6 @@ namespace MeetingNotes.Controllers
             {
                 _meetingService.DeleteMeeting(meeting);
             }
-    
             return RedirectToAction(nameof(Index));
         }
     }

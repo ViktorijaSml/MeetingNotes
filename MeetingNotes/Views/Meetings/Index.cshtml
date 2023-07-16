@@ -23,12 +23,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.DateTime)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NotesId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Note.NoteData)
-            </th>
+            
+           
             <th></th>
         </tr>
     </thead>
@@ -45,12 +41,7 @@
             <td>
                 @Html.DisplayFor(modelItem => item.DateTime)
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NotesId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Note.NoteData)
-            </td>
+            
             <td>
                 <a asp-action="Edit" asp-route-id="@item.MeetingId">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.MeetingId">Details</a> |
