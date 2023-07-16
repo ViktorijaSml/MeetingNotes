@@ -149,6 +149,7 @@ namespace MeetingNotes.Controllers
             if (meeting != null)
             {
                 _meetingService.DeleteMeeting(meeting);
+                _noteService.DeleteNote(meeting.Note);
             }
             return RedirectToAction(nameof(Index));
         }
