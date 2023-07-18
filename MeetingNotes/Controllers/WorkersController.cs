@@ -8,7 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
-
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Azure.Identity;
 
 namespace MeetingNotes.Controllers
 {
@@ -61,9 +63,14 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name,LastName,HiringDate,UserId,IsManager")] Worker worker)
+        public async Task<IActionResult> Create(Worker worker, string username, string email)
         {
             
+            Console.WriteLine(username + " " + email);
+            var identity = _workerService.CreateIdentity(username, email);
+            worker.UserId = identity.Id;
+            worker.identityUser = identity;
+            if (worker.identityUser != null) { 
             try
             { 
             if (ModelState.IsValid)
@@ -74,11 +81,13 @@ namespace MeetingNotes.Controllers
             }
             catch (DbUpdateException /* ex */)
             {
+
                 //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " +
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
+}
             return View(worker);
         }
 
@@ -105,7 +114,7 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,LastName,HiringDate,UserId")] Worker worker)
+        public async Task<IActionResult> Edit(int id, Worker worker, string newUsername, string newEmail)
         {
             if (id != worker.Id)
             {
@@ -116,7 +125,7 @@ namespace MeetingNotes.Controllers
             {
                 try
                 {
-                    _workerService.UpdateWorker(worker);
+                    _workerService.UpdateWorker(worker, newUsername, newEmail);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -163,7 +172,10 @@ namespace MeetingNotes.Controllers
             var worker = _workerService.GetWorkerById(id);
             if (worker != null)
             {
-                _workerService.DeleteWorker(worker);   
+                var identity = _workerService.GetIdentityUserById(worker.UserId);
+                _workerService.DeleteWorker(worker);  
+                _workerService.DeleteIdentity(identity);
+  
             }
           
             return RedirectToAction(nameof(Index));

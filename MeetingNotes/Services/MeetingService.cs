@@ -1,10 +1,13 @@
 ﻿using MeetingNotes.Data;
 using MeetingNotes.Models;
+using MeetingNotes.Models.ViewModels;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeetingNotes.Services
 {
     public interface IMeetingService {
+        IEnumerable<MeetingViewModel> GetAllMeetingsViewModel();
         public IEnumerable<Meeting> GetAllMeetings();
         public Meeting? GetMeetingById(int? id);
         public int CreateMeeting(Meeting meeting);
@@ -25,7 +28,18 @@ namespace MeetingNotes.Services
 
         //---------------------------------------------------------------------------------------------------------
 
+        public IEnumerable<MeetingViewModel> GetAllMeetingsViewModel()
+        {
+            var result = _db.Meetings.Select(s => new MeetingViewModel
+            {
+                MeetingId = s.MeetingId,
+                MeetingDate = s.DateTime,
+                ManagerFullName = _db.Workers.Where(w => w.Id == s.ManagerId).Select(s => s.Name + "" + s.LastName).FirstOrDefault(),
+                WorkerFullName = _db.Workers.Where(w => w.Id == s.WorkerId).Select(s => s.Name + "" + s.LastName).FirstOrDefault()
+            }).ToList();
 
+            return result;
+        }
         public IEnumerable<Meeting> GetAllMeetings() => _db.Meetings.ToList();
 
         public Meeting? GetMeetingById(int? id)

@@ -11,7 +11,7 @@ namespace MeetingNotes.Models.ViewModels
         public string ManagerFullName { get; set; }
 
         public string WorkerFullName { get; set; }
-        public Notes notes { get; set; }
+        public Note notes { get; set; }
 
         //todo za details ne treba nam notes
         //notes prosirujemo sa enumom: regular meeting, public feedback, (tip koji ce worker moc vidit)
