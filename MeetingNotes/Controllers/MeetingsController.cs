@@ -27,7 +27,7 @@ namespace MeetingNotes.Controllers
         // GET: Meetings
         public async Task<IActionResult> Index()
         {
-            var meetings = _meetingService.GetAllMeetings();
+            var meetings = _meetingService.GetAllMeetingsViewModel();
             return (meetings != null) ? View(meetings) : Problem("Entity set 'ApplicationDbContext.Meetings  is null.");
         }
 

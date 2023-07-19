@@ -7,36 +7,42 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Data;
 using MeetingNotes.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Data;
+using MeetingManager.Services;
 
 namespace MeetingNotes.Controllers
 {
+ //   [Authorize(Roles = "Manager")]
+
     public class ManagersController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public ManagersController(ApplicationDbContext context)
+        private readonly IManagerService _managerService;
+        public ManagersController(IManagerService managerService)
         {
-            _context = context;
+            _managerService = managerService;
         }
+
+//---------------------------------------------------------------------------------------------------------
 
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-              return _context.Managers != null ? 
-                          View(await _context.Managers.ToListAsync()) :
+         //   Content("Manager");
+            return _managerService.GetManagers() != null ? 
+                          View(_managerService.GetManagers()) :
                           Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
         }
 
         // GET: Managers/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Managers == null)
+            if (id == null || _managerService.GetManagers == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Managers
-                .FirstOrDefaultAsync(m => m.ManagerId == id);
+            var manager = _managerService.GetManagerById(id);
             if (manager == null)
             {
                 return NotFound();
@@ -60,8 +66,7 @@ namespace MeetingNotes.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(manager);
-                await _context.SaveChangesAsync();
+                _managerService.CreateManager(manager);
                 return RedirectToAction(nameof(Index));
             }
             return View(manager);
@@ -70,12 +75,12 @@ namespace MeetingNotes.Controllers
         // GET: Managers/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Managers == null)
+            if (id == null || _managerService.GetManagers == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Managers.FindAsync(id);
+            var manager = _managerService.GetManagerById(id);
             if (manager == null)
             {
                 return NotFound();
@@ -99,12 +104,11 @@ namespace MeetingNotes.Controllers
             {
                 try
                 {
-                    _context.Update(manager);
-                    await _context.SaveChangesAsync();
+                   _managerService.UpdateManager(manager);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ManagerExists(manager.ManagerId))
+                    if (!_managerService.CheckManager(manager.ManagerId))
                     {
                         return NotFound();
                     }
@@ -121,13 +125,12 @@ namespace MeetingNotes.Controllers
         // GET: Managers/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Managers == null)
+            if (id == null || _managerService.GetManagers() == null)
             {
                 return NotFound();
             }
 
-            var manager = await _context.Managers
-                .FirstOrDefaultAsync(m => m.ManagerId == id);
+            var manager = _managerService.GetManagerById(id);
             if (manager == null)
             {
                 return NotFound();
@@ -141,23 +144,18 @@ namespace MeetingNotes.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Managers == null)
+            if (_managerService.GetManagers() == null)
             {
                 return Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
             }
-            var manager = await _context.Managers.FindAsync(id);
+            var manager = _managerService.GetManagerById(id);
             if (manager != null)
             {
-                _context.Managers.Remove(manager);
+                _managerService.DeleteManager(id);
             }
             
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ManagerExists(int id)
-        {
-          return (_context.Managers?.Any(e => e.ManagerId == id)).GetValueOrDefault();
-        }
     }
 }

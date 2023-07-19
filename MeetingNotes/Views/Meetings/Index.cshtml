@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MeetingNotes.Models.Meeting>
+﻿@model IEnumerable<MeetingNotes.Models.ViewModels.MeetingViewModel>
 
 
 @{
@@ -14,14 +14,14 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.ManagerId)
+                @Html.DisplayNameFor(model => model.ManagerFullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.WorkerId)
+                @Html.DisplayNameFor(model => model.WorkerFullName)
             </th>
             
             <th>
-                @Html.DisplayNameFor(model => model.DateTime)
+                @Html.DisplayNameFor(model => model.MeetingDate)
             </th>
             
            
@@ -32,14 +32,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.ManagerId)
+                    @Html.DisplayFor(modelItem => item.ManagerFullName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.WorkerId)
+                    @Html.DisplayFor(modelItem => item.WorkerFullName)
             </td>
             
             <td>
-                @Html.DisplayFor(modelItem => item.DateTime)
+                    @Html.DisplayFor(modelItem => item.MeetingDate)
             </td>
             
             <td>

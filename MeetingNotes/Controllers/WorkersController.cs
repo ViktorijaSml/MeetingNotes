@@ -14,8 +14,12 @@ using Azure.Identity;
 
 namespace MeetingNotes.Controllers
 {
+    //[Authorize(Roles = "Worker")]
+
     public class WorkersController : Controller
     {
+      
+
         private readonly IWorkerService _workerService;
 
         public WorkersController(IWorkerService workerService)
@@ -29,7 +33,8 @@ namespace MeetingNotes.Controllers
         // GET: Workers
         public async Task<IActionResult> Index()
         {
-            var  workers =  _workerService.GetAllWorkers();
+          //  Content("Worker");
+            var workers =  _workerService.GetAllWorkers();
             return (workers !=  null) ? View(workers) : Problem("Entity set 'ApplicationDbContext.Workers'  is null.");  
         }
 
