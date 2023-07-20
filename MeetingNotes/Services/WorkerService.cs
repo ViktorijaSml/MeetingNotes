@@ -15,7 +15,7 @@ namespace MeetingNotes.Services
         public void DeleteWorker(Worker worker);
         public bool CheckWorker(int id);
         public void setManager(int workerId);
-        public IdentityUser CreateIdentity(string username, string password);
+        public IdentityUser CreateIdentity(string username, string email, string password);
         public Worker CreateWorker(Worker worker);
         public IdentityUser GetIdentityUserById(string id);
         public void DeleteIdentity(IdentityUser identity);
@@ -37,7 +37,7 @@ namespace MeetingNotes.Services
 
         //---------------------------------------------------------------------------------------------------------
 
-        public IdentityUser CreateIdentity(string username, string email)
+        public IdentityUser CreateIdentity(string username, string email, string password)
         {
             var identityUser = new IdentityUser
             {
@@ -46,7 +46,7 @@ namespace MeetingNotes.Services
                 Email = email,
                 NormalizedEmail = email.ToUpper(),
             };
-            _userManager.CreateAsync(identityUser);
+            _userManager.CreateAsync(identityUser, password);
             return identityUser;
         }
         public Worker CreateWorker(Worker worker)
@@ -81,7 +81,7 @@ namespace MeetingNotes.Services
             _db.Workers.Remove(worker);
             _db.SaveChanges();
         }
-      public void DeleteIdentity (IdentityUser identity)
+        public void DeleteIdentity (IdentityUser identity)
         {
             _userManager.DeleteAsync(identity);
         }

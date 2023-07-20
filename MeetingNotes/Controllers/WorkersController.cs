@@ -68,11 +68,10 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Worker worker, string username, string email)
+        public async Task<IActionResult> Create(Worker worker, string username, string email, string password)
         {
             
-            Console.WriteLine(username + " " + email);
-            var identity = _workerService.CreateIdentity(username, email);
+            var identity = _workerService.CreateIdentity(username, email, password);
             worker.UserId = identity.Id;
             worker.identityUser = identity;
             if (worker.identityUser != null) { 

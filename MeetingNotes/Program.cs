@@ -19,9 +19,19 @@ namespace MeetingNotes
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-               // .AddRoles<IdentityRole>();
+            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                // Password requirements configuration
+                options.Password.RequireDigit = true;        // Requires at least one digit (0-9)
+                options.Password.RequiredLength = 8;        // Requires minimum password length of 8 characters
+                options.Password.RequireNonAlphanumeric = true; // Requires at least one non-alphanumeric character
+                options.Password.RequireUppercase = true;    // Requires at least one uppercase letter
+                options.Password.RequireLowercase = true;    // Requires at least one lowercase letter
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+            // .AddRoles<IdentityRole>();
 
             builder.Services.AddControllersWithViews();
 
