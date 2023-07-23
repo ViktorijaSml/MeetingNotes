@@ -14,7 +14,7 @@ using Azure.Identity;
 
 namespace MeetingNotes.Controllers
 {
-    //[Authorize(Roles = "Worker")]
+    [Authorize(Roles = "Worker")]
 
     public class WorkersController : Controller
     {

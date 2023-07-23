@@ -4,6 +4,7 @@ using MeetingNotes.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetingNotes.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230723220723_Fixing_Roles")]
+    partial class Fixing_Roles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -264,15 +267,15 @@ namespace MeetingNotes.Data.Migrations
                         {
                             Id = "22e40406-8a9d-2d82-912c-5d6a640ee696",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fddf8f33-b7de-4510-b57f-c28635c0a502",
+                            ConcurrencyStamp = "c4736b7b-4dcf-be6b-8b03-e299b4836146",
                             Email = "me@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ME@EXAMPLE.COM",
                             NormalizedUserName = "ME@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDAg6BkLP4mBcvbn71wTDgecd38sb408W2sGXYIvS5cRY6sHJZBvHGNvtfxSKZX8og==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEIB/N9AG5QrJ4XU3szWuwqgqG7qQ8CMr9dzz3f9F1lB84j0CxarXMAvnA6i0Exj/7Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "a3d35204-0b7c-4e44-b786-6c1e312d859b",
+                            SecurityStamp = "I5MOLV6IDX2DRGZMNIQ6KEUQKW3QIG3A",
                             TwoFactorEnabled = false,
                             UserName = "me@example.com"
                         });

@@ -28,10 +28,11 @@ namespace MeetingNotes
                 options.Password.RequireUppercase = true;    // Requires at least one uppercase letter
                 options.Password.RequireLowercase = true;    // Requires at least one lowercase letter
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            // .AddRoles<IdentityRole>();
+            
 
             builder.Services.AddControllersWithViews();
 

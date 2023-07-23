@@ -13,7 +13,7 @@ using MeetingManager.Services;
 
 namespace MeetingNotes.Controllers
 {
- //   [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager")]
 
     public class ManagersController : Controller
     {
