@@ -8,9 +8,9 @@ namespace MeetingNotes.Models
         public string Name { get; set; }
         public string LastName { get; set; }
         public DateTime HiringDate { get; set; }
-        public bool IsManager { get; set; } 
-        public string UserId { get; set; }  //FK usera //IdentityUserId
-        public IdentityUser identityUser { get; set; }
+        public bool IsManager { get; set; } = false;
+        public string UserId { get; set; } = "0";  //FK usera //IdentityUserId
+        public IdentityUser? identityUser { get; set; }
 
     }
 }
