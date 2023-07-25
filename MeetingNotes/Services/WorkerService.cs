@@ -52,12 +52,13 @@ namespace MeetingNotes.Services
                 //Creating IdentityUser
                 var user = new IdentityUser
                 {
-                    UserName = model.Username,
-                    NormalizedUserName = model.Username.ToUpper(),
-                    Email = model.Email,
+                    UserName = model.Email,
+                    NormalizedUserName = model.Email.ToUpper(),
                     NormalizedEmail = model.Email.ToUpper(),
-                    EmailConfirmed = true
+                    EmailConfirmed = true   
                 };
+               
+
                 PasswordHasher<IdentityUser> ph = new PasswordHasher<IdentityUser>();
                 user.PasswordHash = ph.HashPassword(user, model.Password);
 
