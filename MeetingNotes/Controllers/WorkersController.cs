@@ -49,7 +49,7 @@ namespace MeetingNotes.Controllers
                 return NotFound();
             }
 
-            var workerById = _workerService.GetWorkerById(id);
+            var workerById = _workerService.GetWorkerDetailsById(id);
             if (workerById == null)
             {
                 return NotFound();

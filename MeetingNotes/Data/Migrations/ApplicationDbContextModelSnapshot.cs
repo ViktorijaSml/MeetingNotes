@@ -25,7 +25,12 @@ namespace MeetingNotes.Data.Migrations
             modelBuilder.Entity("MeetingNotes.Models.Manager", b =>
                 {
                     b.Property<int>("ManagerId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ManagerId"));
+
+                    b.HasKey("ManagerId");
 
                     b.ToTable("Manager", (string)null);
                 });
@@ -92,6 +97,9 @@ namespace MeetingNotes.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ManagerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -101,10 +109,11 @@ namespace MeetingNotes.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("identityUserId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ManagerId");
 
                     b.HasIndex("identityUserId");
 
@@ -255,15 +264,15 @@ namespace MeetingNotes.Data.Migrations
                         {
                             Id = "22e40406-8a9d-2d82-912c-5d6a640ee696",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "91e69ef6-0955-40db-bfa0-2299d874cc65",
+                            ConcurrencyStamp = "fddf8f33-b7de-4510-b57f-c28635c0a502",
                             Email = "me@example.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ME@EXAMPLE.COM",
                             NormalizedUserName = "ME@EXAMPLE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMBmESDeUi3ZXXjJz1QbDc7/pIOcEZFqtJdDawXqWozHqrcblRTEEMq61ps0R3VIXQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDAg6BkLP4mBcvbn71wTDgecd38sb408W2sGXYIvS5cRY6sHJZBvHGNvtfxSKZX8og==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "dfe5a351-099b-47ac-8110-e56346c98e2b",
+                            SecurityStamp = "a3d35204-0b7c-4e44-b786-6c1e312d859b",
                             TwoFactorEnabled = false,
                             UserName = "me@example.com"
                         });
@@ -374,11 +383,13 @@ namespace MeetingNotes.Data.Migrations
 
             modelBuilder.Entity("MeetingNotes.Models.Worker", b =>
                 {
+                    b.HasOne("MeetingNotes.Models.Manager", null)
+                        .WithMany("Workers")
+                        .HasForeignKey("ManagerId");
+
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "identityUser")
                         .WithMany()
-                        .HasForeignKey("identityUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("identityUserId");
 
                     b.Navigation("identityUser");
                 });
@@ -432,6 +443,11 @@ namespace MeetingNotes.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("MeetingNotes.Models.Manager", b =>
+                {
+                    b.Navigation("Workers");
                 });
 #pragma warning restore 612, 618
         }

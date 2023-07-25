@@ -18,6 +18,7 @@ namespace MeetingNotes.Services
         public void setManager(int workerId);
         public Worker CreateWorker(Worker worker);
         public Task<int> CreateWorkerView(CreateWorkerViewModel model);
+        public WorkerDetailsModel GetWorkerDetailsById(int? id);
         public IdentityUser GetIdentityUserById(string id);
         public void DeleteIdentity(IdentityUser identity);
 
@@ -95,6 +96,23 @@ namespace MeetingNotes.Services
         }
         public IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
 
+        //get workerbyid(id)
+        public WorkerDetailsModel GetWorkerDetailsById (int? id)
+        {
+           var worker =  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();
+
+            WorkerDetailsModel model = new WorkerDetailsModel
+            {
+                Id = worker.Id,
+                FirstName = worker.Name,
+                LastName = worker.LastName,
+                HiringDate = worker.HiringDate,
+                Email = worker.identityUser.Email,
+            };
+            model.IsManager = (worker.IsManager == true) ? "Yes" : "No";
+
+            return model;
+        }
         public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();
         public IdentityUser GetIdentityUserById(string id) => _userManager.Users.FirstOrDefault(u => u.Id == id);
 
