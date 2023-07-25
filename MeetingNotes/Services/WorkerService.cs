@@ -3,6 +3,7 @@ using MeetingNotes.Models;
 using MeetingNotes.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using MeetingNotes.Models.ViewModels;
 
 
 namespace MeetingNotes.Services
@@ -15,8 +16,8 @@ namespace MeetingNotes.Services
         public void DeleteWorker(Worker worker);
         public bool CheckWorker(int id);
         public void setManager(int workerId);
-        public IdentityUser CreateIdentity(string username, string email, string password);
         public Worker CreateWorker(Worker worker);
+        public Task<int> CreateWorkerView(CreateWorkerViewModel model);
         public IdentityUser GetIdentityUserById(string id);
         public void DeleteIdentity(IdentityUser identity);
 
@@ -36,26 +37,62 @@ namespace MeetingNotes.Services
         }
 
         //---------------------------------------------------------------------------------------------------------
-
-        public IdentityUser CreateIdentity(string username, string email, string password)
-        {
-            var identityUser = new IdentityUser
-            {
-                UserName = username,
-                NormalizedUserName = username.ToUpper(),
-                Email = email,
-                NormalizedEmail = email.ToUpper(),
-            };
-            _userManager.CreateAsync(identityUser, password);
-            return identityUser;
-        }
+       
         public Worker CreateWorker(Worker worker)
         {                      
             _db.Workers.Add(worker);
             _db.SaveChanges();
             return worker;
         }
+        public async Task<int> CreateWorkerView(CreateWorkerViewModel model)
+        {
+            try
+            {
+                //Creating IdentityUser
+                var user = new IdentityUser
+                {
+                    UserName = model.Username,
+                    NormalizedUserName = model.Username.ToUpper(),
+                    Email = model.Email,
+                    NormalizedEmail = model.Email.ToUpper(),
+                    EmailConfirmed = true
+                };
+                PasswordHasher<IdentityUser> ph = new PasswordHasher<IdentityUser>();
+                user.PasswordHash = ph.HashPassword(user, model.Password);
 
+                await _userManager.CreateAsync(user);
+
+                //Adding role to user
+                if (model.IsManager == true) 
+                { 
+                    await _userManager.AddToRoleAsync(user, "Manager");
+                }
+             
+                    await _userManager.AddToRoleAsync(user, "Worker");
+                
+
+                //Creating Worker
+                var worker = new Worker
+                {
+                    Name = model.FirstName,
+                    LastName = model.LastName,
+                    HiringDate = model.EnrollmentDate,
+                    IsManager = model.IsManager,
+                    identityUser = user,
+                    UserId = user.Id
+                };
+
+                _db.Workers.Add(worker);
+                _db.SaveChanges();
+
+
+                return worker.Id;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
+        }
         public IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
 
         public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();
