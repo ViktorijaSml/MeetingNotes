@@ -13,7 +13,7 @@ using MeetingManager.Services;
 
 namespace MeetingNotes.Controllers
 {
-    [Authorize(Roles = "Manager")]
+    [Authorize(Roles = "Manager, Admin")]
 
     public class ManagersController : Controller
     {
@@ -28,7 +28,7 @@ namespace MeetingNotes.Controllers
         // GET: Managers
         public async Task<IActionResult> Index()
         {
-         //   Content("Manager");
+            Content("Manager || Admin");
             return _managerService.GetManagers() != null ? 
                           View(_managerService.GetManagers()) :
                           Problem("Entity set 'ApplicationDbContext.Manager'  is null.");

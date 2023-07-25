@@ -11,10 +11,11 @@ using MeetingNotes.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using Azure.Identity;
+using MeetingNotes.Models.ViewModels;
 
 namespace MeetingNotes.Controllers
 {
-    [Authorize(Roles = "Worker")]
+    [Authorize(Roles = "Worker, Admin")]
 
     public class WorkersController : Controller
     {
@@ -33,7 +34,7 @@ namespace MeetingNotes.Controllers
         // GET: Workers
         public async Task<IActionResult> Index()
         {
-          //  Content("Worker");
+            Content("Worker || Admin");
             var workers =  _workerService.GetAllWorkers();
             return (workers !=  null) ? View(workers) : Problem("Entity set 'ApplicationDbContext.Workers'  is null.");  
         }
@@ -68,18 +69,16 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Worker worker, string username, string email, string password)
+        public async Task<IActionResult> Create(CreateWorkerViewModel worker)
         {
             
-            var identity = _workerService.CreateIdentity(username, email, password);
-            worker.UserId = identity.Id;
-            worker.identityUser = identity;
-            if (worker.identityUser != null) { 
+          
+            
             try
             { 
             if (ModelState.IsValid)
             {
-                _workerService.CreateWorker(worker);
+                await _workerService.CreateWorkerView(worker);
                 return RedirectToAction(nameof(Index));
             }
             }
@@ -91,7 +90,7 @@ namespace MeetingNotes.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-}
+
             return View(worker);
         }
 
