@@ -9,7 +9,8 @@ using MeetingNotes.Data;
 using MeetingNotes.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
-using MeetingManager.Services;
+using MeetingNotes.Services;
+using MeetingNotes.Models.ViewModels;
 
 namespace MeetingNotes.Controllers
 {
@@ -29,8 +30,8 @@ namespace MeetingNotes.Controllers
         public async Task<IActionResult> Index()
         {
             Content("Manager || Admin");
-            return _managerService.GetManagers() != null ? 
-                          View(_managerService.GetManagers()) :
+            return _managerService.GetAllManagersViewModel() != null ? 
+                          View(_managerService.GetAllManagersViewModel()) :
                           Problem("Entity set 'ApplicationDbContext.Manager'  is null.");
         }
 
@@ -62,7 +63,7 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ManagerId,FirstName,LastName")] Manager manager)
+        public async Task<IActionResult> Create(Cr)
         {
             if (ModelState.IsValid)
             {

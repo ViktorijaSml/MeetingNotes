@@ -35,7 +35,7 @@ namespace MeetingNotes.Controllers
         public async Task<IActionResult> Index()
         {
             Content("Worker || Admin");
-            var workers =  _workerService.GetAllWorkers();
+            var workers =  _workerService.GetAllWorkersViewModel();
             return (workers !=  null) ? View(workers) : Problem("Entity set 'ApplicationDbContext.Workers'  is null.");  
         }
 

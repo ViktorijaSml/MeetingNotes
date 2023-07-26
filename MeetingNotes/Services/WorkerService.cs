@@ -11,6 +11,7 @@ namespace MeetingNotes.Services
     public interface IWorkerService
     {   
         public IEnumerable<Worker> GetAllWorkers();
+        public IEnumerable<WorkerViewModel> GetAllWorkersViewModel();
         public Worker? GetWorkerById(int? id);
         public Worker UpdateWorker(Worker newWorker, string newUsername, string newEmail);
         public void DeleteWorker(Worker worker);
@@ -47,13 +48,16 @@ namespace MeetingNotes.Services
         }
         public async Task<int> CreateWorkerView(CreateWorkerViewModel model)
         {
+            var modifiedEmail = model.Email.Replace('@', ' ');
+
             try
             {
                 //Creating IdentityUser
                 var user = new IdentityUser
                 {
-                    UserName = model.Email,
-                    NormalizedUserName = model.Email.ToUpper(),
+                    UserName = modifiedEmail,
+                    NormalizedUserName = modifiedEmail.ToUpper(),
+                    Email = model.Email,
                     NormalizedEmail = model.Email.ToUpper(),
                     EmailConfirmed = true   
                 };
@@ -97,7 +101,18 @@ namespace MeetingNotes.Services
         }
         public IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
 
-        //get workerbyid(id)
+        public IEnumerable<WorkerViewModel> GetAllWorkersViewModel()
+        {
+            var result = _db.Workers.Select(s => new WorkerViewModel
+            {
+                Id = s.Id,
+                HiringDate = s.HiringDate,
+                FirstName = s.Name,
+                LastName = s.LastName
+            }).ToList();
+
+            return result;
+        }
         public WorkerDetailsModel GetWorkerDetailsById (int? id)
         {
            var worker =  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();

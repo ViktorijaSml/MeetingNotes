@@ -22,6 +22,8 @@
                 <input asp-for="Workers" class="form-control" />
                 <span asp-validation-for="Workers" class="text-danger"></span>
             </div>
+            @Html.DropDownListFor(m => m.Workers, new SelectList(Model.Workers, "firstName", "LastName"), " ")
+
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
