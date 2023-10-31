@@ -55,7 +55,7 @@ namespace MeetingNotes.Controllers
         // GET: Managers/Create
         public IActionResult Create()
         {
-            return View();
+            return View(_managerService.GetManagerWorkerPairingModel());
         }
 
         // POST: Managers/Create
@@ -63,14 +63,14 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Cr)
+        public async Task<IActionResult> Create(CreateManagerModel model)
         {
             if (ModelState.IsValid)
             {
-                _managerService.CreateManager(manager);
+                await _managerService.CreateManagerView(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(manager);
+            return View(model);
         }
 
         // GET: Managers/Edit/5

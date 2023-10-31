@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MeetingNotes.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MeetingManager.Services;
+using MeetingNotes.Services;
 
 namespace MeetingNotes
 {

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetingNotes.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230718183626_Changed_Worker_identity")]
-    partial class Changed_Worker_identity
+    [Migration("20231030123427_Fixes")]
+    partial class Fixes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,12 +28,12 @@ namespace MeetingNotes.Data.Migrations
             modelBuilder.Entity("MeetingNotes.Models.Manager", b =>
                 {
                     b.Property<int>("ManagerId")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ManagerId"));
+                    b.Property<int>("WorkerId")
+                        .HasColumnType("int");
 
-                    b.HasKey("ManagerId");
+                    b.HasKey("ManagerId", "WorkerId");
 
                     b.ToTable("Manager", (string)null);
                 });
@@ -100,14 +100,12 @@ namespace MeetingNotes.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ManagerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("identityUserId")
@@ -115,8 +113,6 @@ namespace MeetingNotes.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ManagerId");
 
                     b.HasIndex("identityUserId");
 
@@ -148,6 +144,29 @@ namespace MeetingNotes.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "74d04fa7-36b6-4fa2-ade4-d2a1759e4091",
+                            ConcurrencyStamp = "1",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "012345f0-akl2–42de-afbf-59ccfdaf72cf6",
+                            ConcurrencyStamp = "2",
+                            Name = "Worker",
+                            NormalizedName = "WORKER"
+                        },
+                        new
+                        {
+                            Id = "341743f0-a67k–42de-afbf-59asdfac72cf6",
+                            ConcurrencyStamp = "3",
+                            Name = "Manager",
+                            NormalizedName = "MANAGER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -238,6 +257,24 @@ namespace MeetingNotes.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "22e40406-8a9d-2d82-912c-5d6a640ee696",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "d44f64d4-ef53-4c21-b502-43c6e5fb3cf6",
+                            Email = "me@example.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ME@EXAMPLE.COM",
+                            NormalizedUserName = "ME@EXAMPLE.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGMGw+VUxetAdnX+GO1EH3gY/5r7Mbzb1vv9kn8d9DI/JZfVQtRWzal6z+pSV5kQGQ==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "3a54d981-8720-4dbd-a0a4-e055dc7e059c",
+                            TwoFactorEnabled = false,
+                            UserName = "me@example.com"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -302,6 +339,13 @@ namespace MeetingNotes.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "22e40406-8a9d-2d82-912c-5d6a640ee696",
+                            RoleId = "74d04fa7-36b6-4fa2-ade4-d2a1759e4091"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -338,10 +382,6 @@ namespace MeetingNotes.Data.Migrations
 
             modelBuilder.Entity("MeetingNotes.Models.Worker", b =>
                 {
-                    b.HasOne("MeetingNotes.Models.Manager", null)
-                        .WithMany("Workers")
-                        .HasForeignKey("ManagerId");
-
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "identityUser")
                         .WithMany()
                         .HasForeignKey("identityUserId")
@@ -400,11 +440,6 @@ namespace MeetingNotes.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("MeetingNotes.Models.Manager", b =>
-                {
-                    b.Navigation("Workers");
                 });
 #pragma warning restore 612, 618
         }

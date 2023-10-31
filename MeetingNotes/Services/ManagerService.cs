@@ -16,10 +16,11 @@ namespace MeetingNotes.Services
         void DeleteManager(int id);
         public bool CheckManager(int id);
         public Manager UpdateManager(Manager manager);
+        public ManagerWorkerPairingModel GetManagerWorkerPairingModel();
 
     }
 
-    //---------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------
 
     public class ManagerService : IManagerService
     {
@@ -45,24 +46,40 @@ namespace MeetingNotes.Services
         }
         public async Task<int> CreateManagerView(CreateManagerModel model)
         {
-            var manager = new Manager
+            //This is also for the CreateView, getting selected Managers
+            try
             {
-                ManagerId = model.SelectedManagerId,
-                Workers = model.SelectedWorkers
-            };
-            _db.Managers.Add(manager);
-            await _db.SaveChangesAsync();
+                //Creating a new Manager with original Manager model and saving his workers
+                List<Manager> managers = model.SelectedWorkerIds.Select(workerId => new Manager
+                {
+                    ManagerId = model.SelectedManagerId,
+                    WorkerId = workerId
+                }).ToList();
 
-            return manager.ManagerId;
+                //Adding managers to the database
+                foreach (var manager in managers)
+                {
+                    await _db.AddRangeAsync(managers);                
+                }
+                //ne treba stalno save changes, dovoljan je jedan za sve
+                await _db.SaveChangesAsync();
+
+                return model.SelectedManagerId;
+            }
+            catch (Exception ex)
+            {
+                return 0;
+            }
         }
 
-        public IEnumerable<Manager> GetManagers()
+    public IEnumerable<Manager> GetManagers()
         {
             return _db.Managers.ToList();
         }
         public IEnumerable<ManagerViewModel> GetAllManagersViewModel()
         {
-            var result = _db.Workers.Where(w => w.IsManager).Select(s => new ManagerViewModel
+            var managerIDs = _db.Managers.Select(w => w.ManagerId).ToList();
+            var result = _db.Workers.Where(w => managerIDs.Contains(w.Id)).Select(s => new ManagerViewModel
             {
                 Id = s.Id,
                 HiringDate = s.HiringDate,
@@ -88,6 +105,32 @@ namespace MeetingNotes.Services
         }
 
         public bool CheckManager(int id) => (_db.Managers?.Any(e => e.ManagerId == id)).GetValueOrDefault();
+        public ManagerWorkerPairingModel GetManagerWorkerPairingModel()
+        {   //This is for CreateView, we need 2 dropdown lists
+
+            //Creating Workers and adding values
+            var workers = _db.Workers.Select(w => new WorkerSelectionViewModel
+                {
+                    Id = w.Id,
+                    FullName = w.Name + " " + w.LastName
+                }).ToList();
+
+            //Creating Managers using WorkerModel
+            var managers = _db.Workers.Where(s => s.IsManager).Select(w => new WorkerSelectionViewModel
+            {
+                Id = w.Id,
+                FullName = w.Name + " " + w.LastName
+            }).ToList();
+
+            //Pairing Managers and Workers into one ViewModel
+            var viewModel = new ManagerWorkerPairingModel
+            {
+                Managers = managers,
+                Workers = workers,
+            };
+
+            return viewModel;
+        }
 
     }
 }

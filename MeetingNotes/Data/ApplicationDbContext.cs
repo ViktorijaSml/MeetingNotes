@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace MeetingNotes.Data
 {
@@ -24,7 +25,7 @@ namespace MeetingNotes.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Worker>().ToTable("Worker");
-            builder.Entity<Manager>().HasNoKey().ToTable("Manager");
+            builder.Entity<Manager>().ToTable("Manager").HasKey(w => new { w.ManagerId, w.WorkerId });
             builder.Entity<Meeting>().ToTable("Meeting");
             builder.Entity<Note>().ToTable("Note");
 

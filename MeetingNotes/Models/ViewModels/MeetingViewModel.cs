@@ -14,6 +14,5 @@ namespace MeetingNotes.Models.ViewModels
         public Note notes { get; set; }
 
         //todo za details ne treba nam notes
-        //notes prosirujemo sa enumom: regular meeting, public feedback, (tip koji ce worker moc vidit)
     }
 }
