@@ -20,11 +20,11 @@
 
     <div>
         <label>Workers:</label>
-        @foreach (var worker in Model.Workers)
+            @foreach (var worker in Model.Workers)
         {
-            <div>
+             <div>   
                 <input type="checkbox" id="worker_@worker.Id" name="SelectedWorkerIds" value="@worker.Id" />
-                <label for="worker_@worker.Id">@worker.FullName</label>
+                        <label for="worker_@worker.Id">@worker.FullName</label>
             </div>
         }
      </div>

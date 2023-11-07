@@ -1,4 +1,4 @@
-﻿@model MeetingNotes.Models.Manager
+﻿@model MeetingNotes.Models.ViewModels.ManagerDeleteViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -12,21 +12,46 @@
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.ManagerId)
+            @Html.DisplayNameFor(model => model.Id)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.ManagerId)
+            @Html.DisplayFor(model => model.Id)
         </dd>
-      @*  <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Workers)
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FirstName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Workers)
-        </dd>*@
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.HiringDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.HiringDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.WorkerIds)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.WorkerIds != null && Model.WorkerIds.Any())
+            {
+                <text>@string.Join(", ", Model.WorkerIds)</text>
+            }
+            else
+            {
+                <text>No Workers Assigned</text>
+            }
+        </dd>
     </dl>
     
     <form asp-action="Delete">
-        <input type="hidden" asp-for="ManagerId" />
+        <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>

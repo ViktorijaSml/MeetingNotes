@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using MeetingNotes.Services;
 using MeetingNotes.Models.ViewModels;
+using System.Runtime.InteropServices;
 
 namespace MeetingNotes.Controllers
 {
@@ -43,7 +44,7 @@ namespace MeetingNotes.Controllers
                 return NotFound();
             }
 
-            var manager = _managerService.GetManagerById(id);
+            var manager = _managerService.GetManagerDetailsView(id);
             if (manager == null)
             {
                 return NotFound();
@@ -81,7 +82,7 @@ namespace MeetingNotes.Controllers
                 return NotFound();
             }
 
-            var manager = _managerService.GetManagerById(id);
+            var manager = _managerService.GetManagerEditView(id);
             if (manager == null)
             {
                 return NotFound();
@@ -94,18 +95,15 @@ namespace MeetingNotes.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ManagerId,FirstName,LastName")] Manager manager)
+        public async Task<IActionResult> Edit(CreateManagerModel model)
         {
-            if (id != manager.ManagerId)
-            {
-                return NotFound();
-            }
+            var manager = _managerService.GetManagerById(model.SelectedManagerId);
 
             if (ModelState.IsValid)
             {
                 try
                 {
-                   _managerService.UpdateManager(manager);
+                   _managerService.UpdateManager(model.SelectedManagerId, model.SelectedWorkerIds);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -137,7 +135,8 @@ namespace MeetingNotes.Controllers
                 return NotFound();
             }
 
-            return View(manager);
+            var model = _managerService.GetManagerViewModelById(id);
+            return View(model);
         }
 
         // POST: Managers/Delete/5

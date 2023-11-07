@@ -2,22 +2,25 @@
 using MeetingNotes.Models;
 using MeetingNotes.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using System.Numerics;
 
 namespace MeetingNotes.Services
 {
     public interface IManagerService
     {
-        Manager? GetManagerById(int? id);
-        int CreateManager(Manager manager);
+        public Manager? GetManagerById(int? id);
+        public int CreateManager(Manager manager);
         public  Task<int> CreateManagerView(CreateManagerModel model);
         IEnumerable<Manager> GetManagers();
         public IEnumerable<ManagerViewModel> GetAllManagersViewModel();
-        void DeleteManager(int id);
+        public void DeleteManager(int id);
         public bool CheckManager(int id);
-        public Manager UpdateManager(Manager manager);
+        public void UpdateManager(int id, List<int> SelectedWorkerIds);
         public ManagerWorkerPairingModel GetManagerWorkerPairingModel();
-
+        public ManagerDeleteViewModel? GetManagerViewModelById(int? id);
+        public ManagerDetailsViewModel? GetManagerDetailsView(int? id);
+        public ManagerEditViewModel? GetManagerEditView(int? id);
     }
 
 //---------------------------------------------------------------------------------------------------------
@@ -72,7 +75,7 @@ namespace MeetingNotes.Services
             }
         }
 
-    public IEnumerable<Manager> GetManagers()
+        public IEnumerable<Manager> GetManagers()
         {
             return _db.Managers.ToList();
         }
@@ -92,16 +95,44 @@ namespace MeetingNotes.Services
 
         public void DeleteManager(int id)
         {
-            var manager = GetManagerById(id);
-            _db.Managers.Remove(manager);
+            foreach(var manager in _db.Managers)
+            {
+                if(manager.ManagerId == id)
+                {
+                    _db.Managers.Remove(manager);
+                }
+            }
             _db.SaveChanges();
         }
 
-        public Manager UpdateManager(Manager manager)
+        public void UpdateManager(int id, List<int> SelectedWorkerIds)
         {
-            _db.Managers.Update(manager);
+            //We get a completely changed list of workers under a manager
+            var workers = _db.Managers.Where(s => s.ManagerId == id);
+            var workersId = workers.Select(s => s.WorkerId).ToList();
+            //check if previous worker is in the new selected list, if not it means it was unchecked, therefore remove it
+            foreach (var worker in workers)
+            {
+                if (!SelectedWorkerIds.Contains(worker.WorkerId))
+                {
+                    _db.Managers.Remove(worker);
+                }
+            }
+            //check what new workers has the selected list added, if its not in the previous list, add it
+            foreach(var worker in SelectedWorkerIds)
+            {
+                if (!workersId.Contains(worker))
+                {
+                    var manager = new Manager
+                    {
+                        ManagerId = id,
+                        WorkerId = worker
+                    };
+                    _db.Managers.Add(manager);
+                }
+            }
+
             _db.SaveChanges();
-            return manager;
         }
 
         public bool CheckManager(int id) => (_db.Managers?.Any(e => e.ManagerId == id)).GetValueOrDefault();
@@ -115,8 +146,10 @@ namespace MeetingNotes.Services
                     FullName = w.Name + " " + w.LastName
                 }).ToList();
 
+            var managerIDs = _db.Managers.Select(w => w.ManagerId).ToList();
             //Creating Managers using WorkerModel
-            var managers = _db.Workers.Where(s => s.IsManager).Select(w => new WorkerSelectionViewModel
+            //If we have created a manager already, don't put him as an option
+            var managers = _db.Workers.Where(s => !managerIDs.Contains(s.Id)).Select(w => new WorkerSelectionViewModel
             {
                 Id = w.Id,
                 FullName = w.Name + " " + w.LastName
@@ -130,6 +163,93 @@ namespace MeetingNotes.Services
             };
 
             return viewModel;
+        }
+        public ManagerDeleteViewModel? GetManagerViewModelById(int? id)
+        {
+            if (_db.Managers.Where(w => w.ManagerId == id) == null)
+            {
+                return null;
+            }
+
+            var workers = new List<int>();
+            foreach(var selectedManager in _db.Managers.Where(s => s.ManagerId == id))
+            {
+                workers.Add(selectedManager.WorkerId);
+            }
+
+            var result = _db.Workers.Where(w => w.Id == id).Select(s => new ManagerDeleteViewModel
+            {
+                Id = s.Id,
+                HiringDate = s.HiringDate,
+                FirstName = s.Name,
+                LastName = s.LastName,
+                WorkerIds = workers
+            }).FirstOrDefault();
+
+            return result;
+        }
+
+        public ManagerDetailsViewModel? GetManagerDetailsView(int? id)
+        {
+            if (_db.Managers.Where(w => w.ManagerId == id) == null)
+            {
+                return null;
+            }
+
+            var workers = new List<Worker>();
+            foreach(var selectedManager in _db.Managers.Where(s => s.ManagerId == id))
+            {
+                var worker = _db.Workers.Where(s => s.Id == selectedManager.WorkerId).FirstOrDefault();
+                workers.Add(worker);
+            }
+
+            var result = _db.Workers.Where(w => w.Id == id).Select(s => new ManagerDetailsViewModel
+            {
+                ManagerId = s.Id,
+                HiringDate = s.HiringDate,
+                FirstName = s.Name,
+                LastName = s.LastName,
+                Workers = workers
+            }).FirstOrDefault();
+
+            return result;
+        }
+
+        public ManagerEditViewModel? GetManagerEditView(int? id)
+        {
+            if (_db.Managers.Where(w => w.ManagerId == id) == null)
+            {
+                return null;
+            }
+
+            var managersWorkers = new List<WorkerSelectionViewModel>();
+
+            foreach (var selectedManager in _db.Managers.Where(s => s.ManagerId == id))
+            {
+                var worker = _db.Workers.Where(s => s.Id == selectedManager.WorkerId).Select(w => new WorkerSelectionViewModel
+                {
+                    FullName = w.Name + " " + w.LastName,
+                    Id = w.Id
+                }).FirstOrDefault();
+                managersWorkers.Add(worker);
+            }
+
+            var managersWorkerIds = _db.Managers.Where(m => m.ManagerId == id).Select(m => m.WorkerId).ToList();
+            var otherWorkers = _db.Workers.Where(w => !managersWorkerIds.Contains(w.Id) && w.Id != id).Select(k => new WorkerSelectionViewModel
+            {
+                FullName = k.Name + " " + k.LastName,
+                Id = k.Id
+            }).ToList();
+            //ne moze first or default,to daje samo jedan rezultat kao sto i pise            
+
+            var result = _db.Workers.Where(w => w.Id == id).Select(s => new ManagerEditViewModel
+            {
+                ManagerId = s.Id,
+                ManagersWorkers = managersWorkers,
+                OtherWorkers = otherWorkers
+            }).FirstOrDefault();
+
+            return result;
         }
 
     }
