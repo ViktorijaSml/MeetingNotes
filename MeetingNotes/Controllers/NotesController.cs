@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
 
@@ -14,11 +8,12 @@ namespace MeetingNotes.Controllers
     public class NotesController : Controller
     {
         private readonly INoteService _noteService;
-
         public NotesController(INoteService noteService)
         {
             _noteService = noteService;
         }
+
+    //---------------------------------------------------------------------------------------------------------
 
         // GET: Notes
         public async Task<IActionResult> Index()
@@ -52,8 +47,6 @@ namespace MeetingNotes.Controllers
         }
 
         // POST: Notes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("NoteId,NoteData,Topic")] Note note)
@@ -83,8 +76,6 @@ namespace MeetingNotes.Controllers
         }
 
         // POST: Notes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("NoteId,NoteData,Topic")] Note note)
@@ -151,6 +142,5 @@ namespace MeetingNotes.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-       
     }
 }

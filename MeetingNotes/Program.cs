@@ -1,9 +1,7 @@
 using MeetingNotes.Data;
-using Microsoft.Extensions.DependencyInjection;
 using MeetingNotes.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using MeetingNotes.Services;
 
 namespace MeetingNotes
 {
@@ -32,16 +30,12 @@ namespace MeetingNotes
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            
-
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddTransient<IWorkerService, WorkerService>();
             builder.Services.AddTransient<IMeetingService, MeetingService>();
             builder.Services.AddTransient<INoteService, NoteService>();
             builder.Services.AddTransient<IManagerService, ManagerService>();
-
-
 
             var app = builder.Build();
 

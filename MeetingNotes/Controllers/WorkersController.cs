@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
 using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-using Azure.Identity;
 using MeetingNotes.Models.ViewModels;
 
 namespace MeetingNotes.Controllers
@@ -22,14 +14,13 @@ namespace MeetingNotes.Controllers
       
 
         private readonly IWorkerService _workerService;
-
         public WorkersController(IWorkerService workerService)
         {
             _workerService = workerService;
 
         }
 
-        //---------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------
 
         // GET: Workers
         public async Task<IActionResult> Index()
@@ -65,15 +56,10 @@ namespace MeetingNotes.Controllers
         }
 
         // POST: Workers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+                [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateWorkerViewModel worker)
         {
-            
-          
-            
             try
             { 
             if (ModelState.IsValid)
@@ -90,7 +76,6 @@ namespace MeetingNotes.Controllers
                     "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-
             return View(worker);
         }
 
@@ -110,11 +95,7 @@ namespace MeetingNotes.Controllers
             return View(worker);
         }
 
-        //---------------------------------------------------------------------------------------------------------
-
         // POST: Workers/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Worker worker, string newUsername, string newEmail)
@@ -159,7 +140,6 @@ namespace MeetingNotes.Controllers
             {
                 return NotFound();
             }
-
             return View(worker);
         }
 
@@ -180,7 +160,6 @@ namespace MeetingNotes.Controllers
                 _workerService.DeleteIdentity(identity);
   
             }
-          
             return RedirectToAction(nameof(Index));
         }
     }

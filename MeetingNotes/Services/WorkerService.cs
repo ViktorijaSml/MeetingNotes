@@ -1,6 +1,5 @@
 ﻿using MeetingNotes.Data;
 using MeetingNotes.Models;
-using MeetingNotes.Controllers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using MeetingNotes.Models.ViewModels;
@@ -38,7 +37,7 @@ namespace MeetingNotes.Services
             _userManager = userManager; 
         }
 
-        //---------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------
        
         public Worker CreateWorker(Worker worker)
         {                      
@@ -54,13 +53,13 @@ namespace MeetingNotes.Services
             {
                 //Creating IdentityUser
                 var user = new IdentityUser
-                {
-                    UserName = modifiedEmail,
-                    NormalizedUserName = modifiedEmail.ToUpper(),
-                    Email = model.Email,
-                    NormalizedEmail = model.Email.ToUpper(),
-                    EmailConfirmed = true   
-                };
+                        {
+                            UserName = modifiedEmail,
+                            NormalizedUserName = modifiedEmail.ToUpper(),
+                            Email = model.Email,
+                            NormalizedEmail = model.Email.ToUpper(),
+                            EmailConfirmed = true   
+                        };
                
 
                 PasswordHasher<IdentityUser> ph = new PasswordHasher<IdentityUser>();
@@ -73,24 +72,21 @@ namespace MeetingNotes.Services
                 { 
                     await _userManager.AddToRoleAsync(user, "Manager");
                 }
-             
-                    await _userManager.AddToRoleAsync(user, "Worker");
+                await _userManager.AddToRoleAsync(user, "Worker");
                 
-
                 //Creating Worker
                 var worker = new Worker
-                {
-                    Name = model.FirstName,
-                    LastName = model.LastName,
-                    HiringDate = model.EnrollmentDate,
-                    IsManager = model.IsManager,
-                    identityUser = user,
-                    UserId = user.Id
-                };
+                        {
+                            Name = model.FirstName,
+                            LastName = model.LastName,
+                            HiringDate = model.EnrollmentDate,
+                            IsManager = model.IsManager,
+                            identityUser = user,
+                            UserId = user.Id
+                        };
 
                 _db.Workers.Add(worker);
                 _db.SaveChanges();
-
 
                 return worker.Id;
             }
@@ -100,41 +96,41 @@ namespace MeetingNotes.Services
             }
         }
         public IEnumerable<Worker> GetAllWorkers() =>  _db.Workers.ToList();
-
         public IEnumerable<WorkerViewModel> GetAllWorkersViewModel()
         {
             var result = _db.Workers.Select(s => new WorkerViewModel
-            {
-                Id = s.Id,
-                HiringDate = s.HiringDate,
-                FirstName = s.Name,
-                LastName = s.LastName
-            }).ToList();
-
+                                            {
+                                                Id = s.Id,
+                                                HiringDate = s.HiringDate,
+                                                FirstName = s.Name,
+                                                LastName = s.LastName
+                                            }).ToList();
             return result;
         }
         public WorkerDetailsModel GetWorkerDetailsById (int? id)
         {
-           var worker =  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();
+           var worker =  _db.Workers.Where(w => w.Id == id)
+                                    .Include(s => s.identityUser)
+                                    .FirstOrDefault();
 
             WorkerDetailsModel model = new WorkerDetailsModel
-            {
-                Id = worker.Id,
-                FirstName = worker.Name,
-                LastName = worker.LastName,
-                HiringDate = worker.HiringDate,
-                Email = worker.identityUser.Email,
-            };
+                                    {
+                                        Id = worker.Id,
+                                        FirstName = worker.Name,
+                                        LastName = worker.LastName,
+                                        HiringDate = worker.HiringDate,
+                                        Email = worker.identityUser.Email,
+                                    };
             model.IsManager = (worker.IsManager == true) ? "Yes" : "No";
 
             return model;
         }
-        public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id).Include(s => s.identityUser).FirstOrDefault();
+        public Worker? GetWorkerById(int? id) =>  _db.Workers.Where(w => w.Id == id)
+                                                             .Include(s => s.identityUser)
+                                                             .FirstOrDefault();
         public IdentityUser GetIdentityUserById(string id) => _userManager.Users.FirstOrDefault(u => u.Id == id);
-
         public Worker UpdateWorker (Worker newWorker, string newUsername, string newEmail)
         {
-            
             _db.Update(newWorker);
             var identityUser = GetIdentityUserById(newWorker.UserId);
             if (identityUser != null)
@@ -145,20 +141,15 @@ namespace MeetingNotes.Services
             _db.SaveChanges();
             return newWorker;
         }
-
         public void DeleteWorker(Worker worker)
         {
             if (worker == null) return;
             _db.Workers.Remove(worker);
             _db.SaveChanges();
         }
-        public void DeleteIdentity (IdentityUser identity)
+        public void DeleteIdentity (IdentityUser identity) => _userManager.DeleteAsync(identity);    
+        public void setManager(int workerId) 
         {
-            _userManager.DeleteAsync(identity);
-        }
-        
-
-        public void setManager(int workerId) {
             var worker = GetWorkerById(workerId);
             
             if (worker != null)
@@ -167,7 +158,6 @@ namespace MeetingNotes.Services
                 _db.SaveChanges();
             }
         }
-
         public bool CheckWorker(int id) => (_db.Workers?.Any(e => e.Id == id)).GetValueOrDefault();
 
     }

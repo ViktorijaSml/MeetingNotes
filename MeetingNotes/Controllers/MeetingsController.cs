@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
 
@@ -22,7 +16,7 @@ namespace MeetingNotes.Controllers
             _noteService = noteService; 
         }
 
-        //---------------------------------------------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------
 
         // GET: Meetings
         public async Task<IActionResult> Index()
@@ -55,8 +49,6 @@ namespace MeetingNotes.Controllers
         }
 
         // POST: Meetings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Meeting meeting)
@@ -86,8 +78,6 @@ namespace MeetingNotes.Controllers
         }
 
         // POST: Meetings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Meeting meeting)

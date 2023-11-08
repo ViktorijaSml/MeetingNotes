@@ -1,6 +1,5 @@
 ﻿using MeetingNotes.Data;
 using MeetingNotes.Models;
-using System.Xml.Linq;
 
 namespace MeetingNotes.Services
 {
@@ -26,28 +25,24 @@ namespace MeetingNotes.Services
 //---------------------------------------------------------------------------------------------------------
 
         public IEnumerable<Note> GetAllNotes() => _db.Notes.ToList();
-
-        public Note? GetNoteById(int? id) => _db.Notes.Where(w => w.NoteId == id).FirstOrDefault();
-
+        public Note? GetNoteById(int? id) => _db.Notes.Where(w => w.NoteId == id)
+                                                      .FirstOrDefault();
         public int CreateNote(Note note) { 
             _db.Add(note);
             _db.SaveChanges();
             return note.NoteId; 
         }
-
         public Note UpdateNote(Note note)
         {
             _db.Update(note);
             _db.SaveChanges();
             return note;
         }
-
         public void DeleteNote(Note note)
         {
             _db.Notes.Remove(note);
             _db.SaveChanges();
         }
-
         public bool CheckNote(int id) => (_db.Meetings?.Any(e => e.MeetingId == id)).GetValueOrDefault();
     }
 }
