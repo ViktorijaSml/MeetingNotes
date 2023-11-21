@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace MeetingNotes.Models.ViewModels
+﻿namespace MeetingNotes.Models.ViewModels
 {
     public class CreateManagerModel
     {

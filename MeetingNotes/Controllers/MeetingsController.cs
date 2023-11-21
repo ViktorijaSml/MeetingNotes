@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using MeetingNotes.Models;
 using MeetingNotes.Services;
-
+using MeetingNotes.Models.ViewModels;
 
 namespace MeetingNotes.Controllers
 {
@@ -45,20 +45,22 @@ namespace MeetingNotes.Controllers
         // GET: Meetings/Create
         public IActionResult Create()
         {
-            return View();
+            var model = _meetingService.GetMeetingCreateViewModel();
+            return View(model);
         }
 
         // POST: Meetings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Meeting meeting)
-        {
-            if (ModelState.IsValid)
+        public async Task<IActionResult> Create(MeetingCreateModel model)
+        {   //popravi note i radice
+            if(ModelState.IsValid)
             {
-                _meetingService.CreateMeeting(meeting);
+               
+                await _meetingService.CreateMeeting(model);
                 return RedirectToAction(nameof(Index));
             }
-            return View(meeting);
+            return View(model);
         }
 
         // GET: Meetings/Edit/5
@@ -144,6 +146,14 @@ namespace MeetingNotes.Controllers
                 _noteService.DeleteNote(meeting.Note);
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public ActionResult GetWorkers(int managerId)
+        {
+            var workers = _meetingService.GetWorkersByManager(managerId);
+            var jsonedWorkers = Json(workers);
+            return jsonedWorkers;
         }
     }
 }

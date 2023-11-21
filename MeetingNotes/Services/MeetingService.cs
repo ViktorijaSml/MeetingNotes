@@ -1,6 +1,7 @@
 ﻿using MeetingNotes.Data;
 using MeetingNotes.Models;
 using MeetingNotes.Models.ViewModels;
+using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.EntityFrameworkCore;
 
 namespace MeetingNotes.Services
@@ -9,10 +10,12 @@ namespace MeetingNotes.Services
         IEnumerable<MeetingViewModel> GetAllMeetingsViewModel();
         public IEnumerable<Meeting> GetAllMeetings();
         public Meeting? GetMeetingById(int? id);
-        public int CreateMeeting(Meeting meeting);
+        public Task<int> CreateMeeting(MeetingCreateModel model);
         public Meeting UpdateMeeting(Meeting meeting);
         public void DeleteMeeting(Meeting meeting);
         public bool CheckMeeting(int id);
+        public MeetingCreateViewModel GetMeetingCreateViewModel();
+        public IEnumerable<WorkerSelectionViewModel> GetWorkersByManager(int managerId);
     }
 
     //---------------------------------------------------------------------------------------------------------
@@ -50,10 +53,17 @@ namespace MeetingNotes.Services
                                       .FirstOrDefault();
             return meeting;
         }
-        public int CreateMeeting(Meeting meeting) 
+        public async Task<int> CreateMeeting(MeetingCreateModel model) 
         {
+            var meeting = new Meeting()
+            {
+                ManagerId = model.SelectedManagerId,
+                WorkerId = model.SelectedWorkerId,
+                DateTime = model.MeetingDate,
+                Note = model.Note
+            };
             _db.Add(meeting);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
             return meeting.MeetingId;
         }
         public Meeting UpdateMeeting(Meeting meeting) 
@@ -68,6 +78,60 @@ namespace MeetingNotes.Services
             _db.SaveChanges();
         }
         public bool CheckMeeting(int id) => (_db.Meetings?.Any(e => e.MeetingId == id)).GetValueOrDefault();
-    
+        public MeetingCreateViewModel GetMeetingCreateViewModel()
+        {
+            var managersId = _db.Managers.Select(s => s.ManagerId)
+                                         .ToList();
+
+            List<WorkerSelectionViewModel> managerSelectionModel = new List<WorkerSelectionViewModel>();
+            List<WorkerSelectionViewModel> workerSelectionModel = new List<WorkerSelectionViewModel>();
+
+            foreach (var worker in _db.Workers)
+            {
+                if (managersId.Contains(worker.Id))
+                {
+                    managerSelectionModel.Add(new WorkerSelectionViewModel
+                                        {
+                                            Id = worker.Id,
+                                            FullName = worker.Name + " " + worker.LastName
+                                        });
+                }
+                else
+                {
+                    workerSelectionModel.Add(new WorkerSelectionViewModel
+                                        {
+                                            Id = worker.Id,
+                                            FullName = worker.Name + " " + worker.LastName
+                                        });
+                }
+            }
+
+            return new MeetingCreateViewModel
+            {
+                Managers = managerSelectionModel,
+                Workers = workerSelectionModel
+            };
+        }
+        public IEnumerable<WorkerSelectionViewModel> GetWorkersByManager(int managerId)
+        {
+            List<int> WorkersId = new List<int>();
+            foreach (var manager in _db.Managers.Where(s => s.ManagerId == managerId))
+            {
+                WorkersId.Add(manager.WorkerId);
+            }
+            var workers = _db.Workers.Where(s => WorkersId.Contains(s.Id))
+                              .Select(w => new WorkerSelectionViewModel
+                              {
+                                  FullName = w.Name + " " + w.LastName,
+                                  Id = w.Id
+                              }).ToList();
+            return _db.Workers.Where(s => WorkersId.Contains(s.Id))
+                              .Select(w => new WorkerSelectionViewModel
+                                    {
+                                        FullName = w.Name + " " + w.LastName,
+                                        Id = w.Id
+                                    }).ToList();
+        }
+
     }
 }

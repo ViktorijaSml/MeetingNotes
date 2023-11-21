@@ -8,34 +8,35 @@
 
 <h4>Manager</h4>
 <hr />
-<form asp-action="Create">
+
 <div class="row">
     <div class="col-md-4">
-       
+       <form asp-action="Create">
+           <div>
             <label for="SelectedManagerId">Select Manager:</label>
             <select asp-for="SelectedManagerId" asp-items="@(new SelectList(Model.Managers, "Id", "FullName"))">
                 <option value="">-- Select a Manager --</option>
-            </select>
-    </div>
-
-    <div>
-        <label>Workers:</label>
-            @foreach (var worker in Model.Workers)
-        {
-             <div>   
-                <input type="checkbox" id="worker_@worker.Id" name="SelectedWorkerIds" value="@worker.Id" />
-                        <label for="worker_@worker.Id">@worker.FullName</label>
+                </select>
             </div>
-        }
-     </div>
-
+            <br>
+            <div>
+                <label>Select Workers:</label>
+                    @foreach (var worker in Model.Workers)
+                        {
+                          <div>   
+                                <input type="checkbox" id="worker_@worker.Id" name="SelectedWorkerIds" value="@worker.Id" />
+                                     <label for="worker_@worker.Id">@worker.FullName</label>
+                          </div>
+                        }
+            </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
-       
-      </div>
+        </form>
     </div>
-</form>
+</div>
+<br>
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

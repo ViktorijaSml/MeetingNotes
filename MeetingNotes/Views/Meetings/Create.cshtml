@@ -1,5 +1,4 @@
-﻿@model MeetingNotes.Models.Meeting
-
+﻿@model MeetingNotes.Models.ViewModels.MeetingCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -12,39 +11,94 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="ManagerId" class="control-label"></label>
-                <input asp-for="ManagerId" class="form-control" />
-                <span asp-validation-for="ManagerId" class="text-danger"></span>
+                @Html.LabelFor(x => Model.SelectedManagerId, "Select Manager", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-5">
+                    @Html.DropDownListFor(x => Model.SelectedManagerId, new SelectList(Model.Managers, "Id", "FullName"), "Select here...", htmlAttributes: new { @class = "form-control form-select-sm form-select ", id = "Manager"})
+                    @Html.ValidationMessageFor(x => x.SelectedManagerId, "", new { @class = "text-danger" })
+                </div>
             </div>
+            <br>
             <div class="form-group">
-                <label asp-for="WorkerId" class="control-label"></label>
-                <input asp-for="WorkerId" class="form-control" />
-                <span asp-validation-for="WorkerId" class="text-danger"></span>
+                @Html.LabelFor(x => Model.SelectedWorkerId, "Select Worker", htmlAttributes: new { @class = "control-label col-md-4" })
+                <div class="col-md-5">
+                    @Html.DropDownListFor(x => Model.SelectedWorkerId, new SelectList(Model.Workers, "Id", "FullName"),"Select here...", htmlAttributes: new { @class = "form-control form-select-sm form-select ", id = "Worker"})
+                    @Html.ValidationMessageFor(x => x.SelectedWorkerId, "", new { @class = "text-danger" })
+                </div>
             </div>
+            <br>
             <div class="form-group">
-                <label asp-for="DateTime" class="control-label"></label>
-                <input asp-for="DateTime" class="form-control" />
-                <span asp-validation-for="DateTime" class="text-danger"></span>
+                <label asp-for="MeetingDate" class="control-label"></label>
+                <input asp-for="MeetingDate" class="form-control" />
+                <span asp-validation-for="MeetingDate" class="text-danger"></span>
             </div>
+            <br>
             <div class="form-group">
                 <label asp-for="Note.NoteData" class="control-label"></label>
                 <input asp-for="Note.NoteData" class="form-control" />
                 <span asp-validation-for="Note.NoteData" class="text-danger"></span>
             </div>
-            
+            @*why label?*@
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
+        <br>
     </div>
 </div>
+
 
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/js/jquery-3.7.1.js"></script>
+   
+    <script type="text/javascript">
+        //$('#Manager').prepend($('<option>', {
+        //    value: '',
+        //    text: ""
+        //}));
+        //$('#Manager').val('');
+
+        //$('#Worker').prepend($('<option>', {
+        //    value: '',
+        //    text: ""
+        //}));
+        //$('#Worker').val('');
+        
+        $('#Manager').change(function () 
+        {
+            var selectedManager = $("#Manager").val();
+            var workerSelect = $('#Worker');
+            workerSelect.empty();
+
+            if (selectedManager != null && selectedManager != '')
+            {
+                $.getJSON('@Url.Action("GetWorkers")', { managerId: selectedManager }, function (workers)
+                {
+                    console.log(workers);
+                    if (workers != null && !jQuery.isEmptyObject(workers)) 
+                    {
+                      
+                        workerSelect.append($('<option/>', 
+                                            {
+                                                value: null,
+                                                text: "Select here..."
+                                            }));
+                    
+                        $.each(workers, function (index, worker)
+                        {
+                            workerSelect.append($('<option/>', 
+                                                {
+                                                    value: worker.id,
+                                                    text: worker.fullName
+                                                }));
+                        });
+                    };
+                });
+            }
+        });
+    </script>
 }
