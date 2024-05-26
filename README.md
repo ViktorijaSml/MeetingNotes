@@ -51,7 +51,16 @@ git clone https://github.com//ViktorijaSml/MeetingNotes.git
 - Click on the `Workers` tab to open up the list of all workers
   - Add all workers with required information by clicking `Create New`
   - ❕ This section includes managers!
+    
+  ![image](https://github.com/ViktorijaSml/MeetingNotes/assets/73490593/873b7b0f-576e-400f-8574-545d3822ab59)
 - After setting up all the workers, click the `Managers` tab
   - With `Create New` button, set up all existing managers
+ 
+  ![image](https://github.com/ViktorijaSml/MeetingNotes/assets/73490593/3fd351a0-d063-4a4c-aafe-ed51ff213ef8)
+- Every manager, worker or meeting has options to edit the information, see more details and delete from the list.
+  
+  ![image](https://github.com/ViktorijaSml/MeetingNotes/assets/73490593/44e06d19-7ce8-46ef-b931-e37ec8298abb)
 - Finally, note down the 1v1 meetings of your choice in the `Meetings` tab
+  
+  ![image](https://github.com/ViktorijaSml/MeetingNotes/assets/73490593/e57e969e-99a9-4753-b90e-93a247983b77)  
 - ❕When everything is set up properly, you can login as one of the workers or managers.  
