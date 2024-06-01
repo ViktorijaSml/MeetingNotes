@@ -3,7 +3,7 @@
 <h1>Meeting Notes</h1>
 <h3>Web app for easier 1v1 meeting management, made using ASP.NET Core MVC, C#</h3>
 
-👋: Welcome to Meeting Notes! This project was initially created for educational purposes, during my internship at Valcon. 
+👋 Welcome to Meeting Notes! This project was initially created for educational purposes, during my internship at Valcon. 
 After the internship has ended, I continued to refine and update it, to practice my skills in ASP.NET and C#. 
 <br>
 <br>
